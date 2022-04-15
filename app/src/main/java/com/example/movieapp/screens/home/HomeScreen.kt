@@ -16,14 +16,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movieapp.models.Movie
 import com.example.movieapp.models.getMovies
 import com.example.movieapp.navigation.MovieScreens
+import com.example.movieapp.viewmodel.FavoritesViewModel
+import com.example.movieapp.widgets.FavoriteIcon
 import com.example.movieapp.widgets.MovieRow
 
 @ExperimentalAnimationApi
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController()) {
+fun HomeScreen(
+    navController: NavController = rememberNavController(),
+    favoritesViewModel: FavoritesViewModel = viewModel()
+) {
     var showMenu by remember {
         mutableStateOf(false)
     }
@@ -56,21 +62,35 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
                 })
         }
     ) {
-        MainContent(navController = navController)
+        MainContent(navController = navController, favoritesViewModel = favoritesViewModel)
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun MainContent(navController: NavController, movieList: List<Movie> = getMovies()) {
+fun MainContent(
+    navController: NavController,
+    movieList: List<Movie> = getMovies(),
+    favoritesViewModel: FavoritesViewModel = viewModel()
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         LazyColumn {
             items(items = movieList) { movie ->
-                MovieRow(movie = movie) { movieId ->
-                    navController.navigate(route = MovieScreens.DetailScreen.name + "/$movieId")
+                MovieRow(
+                    movie = movie,
+                    onItemClick = { movieId ->
+                        navController.navigate(route = MovieScreens.DetailScreen.name + "/$movieId")
+                    }
+                ) {
+                    FavoriteIcon(
+                        movie = movie,
+                        isFavorite = favoritesViewModel.isFavorite(movie),
+                    ) { movie ->
+                        favoritesViewModel.toggleFavorite(movie)
+                    }
                 }
             }
         }

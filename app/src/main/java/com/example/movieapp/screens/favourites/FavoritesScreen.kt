@@ -11,16 +11,21 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.movieapp.models.Movie
 import com.example.movieapp.models.getMovies
 import com.example.movieapp.navigation.MovieScreens
+import com.example.movieapp.viewmodel.FavoritesViewModel
 import com.example.movieapp.widgets.MovieRow
 
 @ExperimentalAnimationApi
 @Composable
-fun FavoritesScreen(navController: NavController = rememberNavController()) {
+fun FavoritesScreen(
+    navController: NavController = rememberNavController(),
+    favoritesViewModel: FavoritesViewModel = viewModel()
+) {
     Scaffold(
         topBar = {
             TopAppBar(backgroundColor = MaterialTheme.colors.primaryVariant, elevation = 3.dp) {
@@ -39,7 +44,7 @@ fun FavoritesScreen(navController: NavController = rememberNavController()) {
             }
         }
     ) {
-        MainContent(navController = navController)
+        MainContent(navController = navController, favoritesViewModel = favoritesViewModel)
     }
 }
 
@@ -47,17 +52,20 @@ fun FavoritesScreen(navController: NavController = rememberNavController()) {
 @Composable
 fun MainContent(
     navController: NavController,
-    movieList: List<Movie> = listOf(getMovies()[0], getMovies()[1])
+    favoritesViewModel: FavoritesViewModel = viewModel()
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         LazyColumn {
-            items(items = movieList) { movie ->
-                MovieRow(movie = movie) { movieId ->
-                    navController.navigate(route = MovieScreens.DetailScreen.name + "/$movieId")
-                }
+            items(items = favoritesViewModel.getFavoriteMovies()) { movie ->
+                MovieRow(
+                    movie = movie,
+                    onItemClick = { movieId ->
+                        navController.navigate(route = MovieScreens.DetailScreen.name + "/$movieId")
+                    }
+                )
             }
         }
     }

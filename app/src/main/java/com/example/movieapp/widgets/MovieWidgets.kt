@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
@@ -27,7 +29,8 @@ import com.example.movieapp.models.getMovies
 @Composable
 fun MovieRow(
     movie: Movie,
-    onItemClick: (String) -> Unit = {}
+    onItemClick: (String) -> Unit = {},
+    content: @Composable () -> Unit = {}
 ) {
     var showExtendedMovieRow by remember {
         mutableStateOf(false)
@@ -63,7 +66,7 @@ fun MovieRow(
             Column(
                 modifier = Modifier
                     .padding(end = 12.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(0.8f)
             ) {
                 Text(text = movie.title, style = MaterialTheme.typography.h6)
                 Text(text = "Director: ${movie.director}", style = MaterialTheme.typography.caption)
@@ -101,7 +104,27 @@ fun MovieRow(
                     modifier = Modifier.clickable { showExtendedMovieRow = !showExtendedMovieRow }
                 )
             }
+
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                content()
+            }
         }
+    }
+}
+
+@Composable
+fun FavoriteIcon(movie: Movie, isFavorite: Boolean, onFavoriteClick: (Movie) -> Unit) {
+    IconButton(onClick = {
+        onFavoriteClick(movie)
+    }) {
+        Icon(
+            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            contentDescription = "favorite",
+            tint = MaterialTheme.colors.secondary
+        )
     }
 }
 
