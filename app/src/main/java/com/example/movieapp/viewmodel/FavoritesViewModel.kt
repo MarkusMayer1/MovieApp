@@ -12,7 +12,7 @@ class FavoritesViewModel : ViewModel() {
     }
 
     fun addToFavorites(movie: Movie) {
-        if(!isFavorite(movie = movie)) {
+        if (!isFavorite(movie = movie)) {
             _favoriteMovies.add(movie)
         }
     }
@@ -26,7 +26,7 @@ class FavoritesViewModel : ViewModel() {
     }
 
     fun toggleFavorite(movie: Movie) {
-        if(isFavorite(movie = movie)) {
+        if (isFavorite(movie = movie)) {
             removeFromFavorites(movie = movie)
         } else {
             addToFavorites(movie = movie)

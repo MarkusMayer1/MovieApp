@@ -1,15 +1,11 @@
 package com.example.movieapp.screens.detail
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -20,6 +16,7 @@ import com.example.movieapp.viewmodel.FavoritesViewModel
 import com.example.movieapp.widgets.FavoriteIcon
 import com.example.movieapp.widgets.HorizontalScrollableImageView
 import com.example.movieapp.widgets.MovieRow
+import com.example.movieapp.widgets.SimpleTopAppBar
 
 @ExperimentalAnimationApi
 @Composable
@@ -32,19 +29,8 @@ fun DetailScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(backgroundColor = MaterialTheme.colors.primaryVariant, elevation = 3.dp) {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "arrow back",
-                        modifier = Modifier.clickable {
-                            navController.popBackStack()    // go back to last screen
-                        })
-
-                    Spacer(modifier = Modifier.width(20.dp))
-
-                    Text(text = movie.title)
-                }
+            SimpleTopAppBar(arrowBackClicked = { navController.popBackStack() }) {
+                Text(text = movie.title)
             }
         }
     ) {
@@ -52,7 +38,6 @@ fun DetailScreen(
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun MainContent(movie: Movie, favoritesViewModel: FavoritesViewModel = viewModel()) {
     Surface(

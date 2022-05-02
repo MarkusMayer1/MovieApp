@@ -25,10 +25,10 @@ import coil.compose.AsyncImage
 import com.example.movieapp.models.Movie
 import com.example.movieapp.models.getMovies
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MovieRow(
-    movie: Movie,
+    movie: Movie = getMovies()[0],
     onItemClick: (String) -> Unit = {},
     content: @Composable () -> Unit = {}
 ) {
@@ -50,14 +50,11 @@ fun MovieRow(
             Surface(
                 modifier = Modifier
                     .padding(12.dp)
-                    .size(100.dp)/*,
-                shape = RectangleShape,
-                elevation = 6.dp*/
+                    .size(100.dp)
             ) {
-                //Icon(imageVector = Icons.Default.AccountBox, contentDescription = "profile pic")
                 AsyncImage(
                     model = movie.images[0],
-                    contentDescription = "Movie poster",
+                    contentDescription = "movie poster",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.clip(CircleShape)
                 )
@@ -77,7 +74,10 @@ fun MovieRow(
                         modifier = Modifier
                             .padding(6.dp)
                     ) {
-                        Text(text = "Plot: ${movie.plot}", style = MaterialTheme.typography.caption)
+                        Text(
+                            text = "Plot: ${movie.plot}",
+                            style = MaterialTheme.typography.caption
+                        )
                         Divider(
                             modifier = Modifier
                                 .padding(top = 3.dp, bottom = 3.dp),
@@ -116,10 +116,12 @@ fun MovieRow(
 }
 
 @Composable
-fun FavoriteIcon(movie: Movie, isFavorite: Boolean, onFavoriteClick: (Movie) -> Unit) {
-    IconButton(onClick = {
-        onFavoriteClick(movie)
-    }) {
+fun FavoriteIcon(
+    movie: Movie = getMovies()[0],
+    isFavorite: Boolean = false,
+    onFavoriteClick: (Movie) -> Unit = {}
+) {
+    IconButton(onClick = { onFavoriteClick(movie) }) {
         Icon(
             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
             contentDescription = "favorite",

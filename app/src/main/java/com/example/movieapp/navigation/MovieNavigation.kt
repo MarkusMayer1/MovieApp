@@ -3,6 +3,7 @@ package com.example.movieapp.navigation
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,11 +17,11 @@ import com.example.movieapp.viewmodel.FavoritesViewModel
 @ExperimentalAnimationApi
 @Composable
 fun MovieNavigation() {
-    val navController = rememberNavController()
-    val favoritesViewModel: FavoritesViewModel = viewModel()
+    val navController = rememberNavController() // create NavController instance
+    val favoritesViewModel: FavoritesViewModel = viewModel() // create ViewModel instance
 
-    NavHost(navController = navController, startDestination = MovieScreens.HomeScreen.name) {
-        composable(MovieScreens.HomeScreen.name) {
+    NavHost(navController = navController, startDestination = MovieScreens.HomeScreen.name) { // pass the navController instance
+        composable(route = MovieScreens.HomeScreen.name) {
             HomeScreen(
                 navController = navController,
                 favoritesViewModel = favoritesViewModel
@@ -29,25 +30,26 @@ fun MovieNavigation() {
 
         // url: www.domain.com/detailscreen/movie=12
         composable(
-            MovieScreens.DetailScreen.name + "/{movieId}",
-            arguments = listOf(navArgument("movieId") {
+            route = MovieScreens.DetailScreen.name + "/{movieId}", // placeholder for arguments
+            arguments = listOf(navArgument("movieId") { // define arguments that can be passed
                 type = NavType.StringType
             })
         ) { backStackEntry ->
             DetailScreen(
                 navController = navController,
-                movieId = backStackEntry.arguments?.getString("movieId"),
+                movieId = backStackEntry.arguments?.getString("movieId"), // pass the value of movieId argument to the DetailScreen composable
                 favoritesViewModel = favoritesViewModel
             )
         }
 
-        composable(MovieScreens.FavoritesScreen.name) {
+        composable(route = MovieScreens.FavoritesScreen.name) {
             FavoritesScreen(
                 navController = navController,
                 favoritesViewModel = favoritesViewModel
             )
         }
 
+        // routes lead to the corresponding composable function
         // add more routes and screens here
     }
 }

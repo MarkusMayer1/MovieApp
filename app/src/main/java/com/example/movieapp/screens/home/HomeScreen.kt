@@ -2,7 +2,6 @@ package com.example.movieapp.screens.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,31 +65,25 @@ fun HomeScreen(
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun MainContent(
     navController: NavController,
     movieList: List<Movie> = getMovies(),
     favoritesViewModel: FavoritesViewModel = viewModel()
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
-    ) {
-        LazyColumn {
-            items(items = movieList) { movie ->
-                MovieRow(
+    LazyColumn {
+        items(items = movieList) { movie ->
+            MovieRow(
+                movie = movie,
+                onItemClick = { movieId ->
+                    navController.navigate(route = MovieScreens.DetailScreen.name + "/$movieId")
+                }
+            ) {
+                FavoriteIcon(
                     movie = movie,
-                    onItemClick = { movieId ->
-                        navController.navigate(route = MovieScreens.DetailScreen.name + "/$movieId")
-                    }
-                ) {
-                    FavoriteIcon(
-                        movie = movie,
-                        isFavorite = favoritesViewModel.isFavorite(movie),
-                    ) { movie ->
-                        favoritesViewModel.toggleFavorite(movie)
-                    }
+                    isFavorite = favoritesViewModel.isFavorite(movie),
+                ) { movie ->
+                    favoritesViewModel.toggleFavorite(movie)
                 }
             }
         }
